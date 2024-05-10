@@ -1,0 +1,8 @@
+{
+    "courierCharges": [
+        {"weightRange": "0-200g", "charge": 5},
+        {"weightRange": "200-500g", "charge": 10},
+        {"weightRange": "500-1000g", "charge": 15},
+        {"weightRange": "1000-5000g", "charge": 20}
+    ]
+}
