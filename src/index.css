@@ -4,18 +4,13 @@ body {
   font-optical-sizing: auto;
   font-weight: 600;
   font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
 
 #ins {
+  margin-top: 15px;
   background-color: rgb(76, 187, 76);
   color: white;
+  padding: 10px;
 }
 
 #ins:hover {
