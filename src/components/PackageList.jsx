@@ -1,12 +1,21 @@
 import React, { useState } from "react";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const MAX_PACKAGE_PRICE = 250;
 
 const PackageList = ({ Items }) => {
+  const notify = () => {
+    if (totalCharge > 0 && totalPrice > 0) {
+      toast("SuccessFully Ordered!😊");
+    } else {
+      toast("Please Select Items!💔");
+    }
+  };
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalWeight, setTotalWeight] = useState(0);
   const [packages, setPackages] = useState([]);
-  const [charge, setCharge] = useState(0);
   const [totalCharge, setTotalCharge] = useState(0);
 
   // Function to toggle item selection and update total price
@@ -39,17 +48,19 @@ const PackageList = ({ Items }) => {
     setTotalPrice(totalPrice);
     setTotalWeight(totalWeight);
     setPackages(packages);
+  };
 
+  const calculateCharge = (totalWeight) => {
     if (totalWeight > 0 && totalWeight < 200) {
-      setCharge(5);
+      return 5;
     } else if (totalWeight >= 200 && totalWeight < 500) {
-      setCharge(10);
+      return 10;
     } else if (totalWeight >= 500 && totalWeight < 1000) {
-      setCharge(15);
+      return 15;
     } else if (totalWeight >= 1000 && totalWeight < 5000) {
-      setCharge(20);
+      return 20;
     } else {
-      setCharge(0);
+      return 0;
     }
   };
 
@@ -66,14 +77,19 @@ const PackageList = ({ Items }) => {
           items: [item],
           totalPrice: item.price,
           totalWeight: item.weight,
+          totalCharge: calculateCharge(item.weight),
         });
       } else {
         // Add item to the suitable package
         packages[packageIndex].items.push(item);
         packages[packageIndex].totalPrice += item.price;
         packages[packageIndex].totalWeight += item.weight;
+        packages[packageIndex].totalCharge = calculateCharge(
+          packages[packageIndex].totalWeight
+        );
       }
     });
+    setTotalCharge(packages.reduce((total, pkg) => total + pkg.totalCharge, 0));
     return packages;
   };
   return (
@@ -111,7 +127,23 @@ const PackageList = ({ Items }) => {
             ))}
           </tbody>
         </table>
-        <button id="ins">Place Order</button>
+        <button onClick={notify} id="ins">
+          Place Order
+        </button>
+
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
       </div>
       <div>
         <h1 style={{ color: "green" }}>Selected Items:</h1>
@@ -130,7 +162,7 @@ const PackageList = ({ Items }) => {
               <strong style={{ color: "blue" }}>
                 Price: ${pkg.totalPrice}
                 <p> Weight: {pkg.totalWeight}g</p>
-                <p> Charge: {charge}$</p>
+                <p> Charge: {pkg.totalCharge}$</p>
               </strong>
             </div>
           ))
